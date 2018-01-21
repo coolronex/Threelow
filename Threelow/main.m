@@ -13,44 +13,49 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        GameController *gameController = [GameController new];
-        [gameController printGamesStatus];
         
-        while (true) {
-            BOOL successfulHeld = NO;
-            while (successfulHeld == NO) {
-                NSLog(@"Which dice do you want to hold?");
-                // gets input from user
-                NSString *diceNumberHoldInput = [InputHandler getUserInput];
-                successfulHeld = [gameController holdDie:diceNumberHoldInput];
-            }
-            successfulHeld = NO;
+        
+        NSLog(@"Do you want to play? yes = PLAY, no = EXIT");
+        while ([[InputHandler getUserInput] isEqualToString:@"yes"]) {
             
-            NSLog(@"What do you want to do?");
-            NSLog(@"Hold or roll?");
-
-            NSString *optionSelected = [[InputHandler getUserInput] lowercaseString];
-            if ([optionSelected isEqualToString: @"hold"]){
+            GameController *gameController = [GameController new];
+            [gameController printGamesStatus];
+            
+            while (YES) {
+                BOOL successfulHeld = NO;
                 while (successfulHeld == NO) {
                     NSLog(@"Which dice do you want to hold?");
                     
                     NSString *diceNumberHoldInput = [InputHandler getUserInput];
                     successfulHeld = [gameController holdDie:diceNumberHoldInput];
-        
+                    
                 }
-            } else if ([optionSelected isEqualToString: @"roll"]){
-                [gameController rollDice];
+                NSInteger totalScore = [gameController calculateScore];
+                if (totalScore != 0) {
+                    break;
+                }
+                
+                NSLog(@"What do you want to do?");
+                NSLog(@"Hold or roll?");
+                
+                NSString *optionSelected = [[InputHandler getUserInput] lowercaseString];
+                if ([optionSelected isEqualToString: @"hold"]){
+                    while (successfulHeld == NO) {
+                        NSLog(@"Which dice do you want to hold?");
+                        
+                        NSString *diceNumberHoldInput = [InputHandler getUserInput];
+                        successfulHeld = [gameController holdDie:diceNumberHoldInput];
+                        
+                    }
+                    
+                } else if ([optionSelected isEqualToString: @"roll"]){
+                    [gameController rollDice];
+                }
             }
-                
-                
-                
             
-         
-            
-            
-            
-            
+            NSLog(@"Do you want to play again? yes = PLAY, no = EXIT");
         }
-        return 0;
     }
+    return 0;
 }
+

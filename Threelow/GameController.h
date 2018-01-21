@@ -12,10 +12,12 @@
 
 @interface GameController : NSObject
 
-@property (nonatomic) NSMutableSet *heldDices;
-@property (nonatomic) NSArray *diceArray;
+@property (nonatomic) NSMutableArray *heldDicesArray;
+@property (nonatomic) NSMutableArray *diceArray;
 
-- (void)printGamesStatus;
+- (void) printGamesStatus;
 - (BOOL) holdDie:(NSString *)userDiceSelection;
-- (void)rollDice; 
+- (void) rollDice;
+- (NSInteger) calculateScore;
+
 @end

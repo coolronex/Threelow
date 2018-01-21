@@ -17,29 +17,25 @@
     self = [super init];
     if (self) {
         
+        _diceArray = [[NSMutableArray alloc] initWithCapacity:5];
+        _heldDicesArray = [[NSMutableArray alloc] init];
         
-        Dice *diceOne = [[Dice alloc] init];
-        [diceOne randomizeDiceValue];
-        Dice *diceTwo = [[Dice alloc] init];
-        [diceTwo randomizeDiceValue];
-        Dice *diceThree = [[Dice alloc] init];
-        [diceThree randomizeDiceValue];
-        Dice *diceFour = [[Dice alloc] init];
-        [diceFour randomizeDiceValue];
-        Dice *diceFive = [[Dice alloc] init];
-        [diceFive randomizeDiceValue];
-        
-        _diceArray = @[diceOne, diceTwo, diceThree, diceFour, diceFive];
+        for (int i = 0; i < 5; i++) {
+            
+            Dice *dice = [[Dice alloc] init];
+            [dice randomizeDiceValue];
+            [_diceArray addObject:dice];
+        }
     }
     return self;
 }
 
 -(void)printGamesStatus;{
-    NSUInteger index = 0;
-    for (Dice * dice in self.diceArray){
+    NSUInteger index = 1;
+    for (Dice *dice in self.diceArray){
         if (dice.isHeld){
             NSLog(@"Dice %lu is: --------- [%d]", (unsigned long)index, dice.currentDiceValue);
-        }else{
+        }else {
             NSLog(@"Dice %lu is: --------- %d", (unsigned long)index, dice.currentDiceValue);
         }
         index ++;
@@ -56,18 +52,47 @@
 }
 
 - (BOOL)holdDie:(NSString *)userDiceSelection {
-    int userInput = userDiceSelection.intValue;
-    if (userInput) {
-        userInput -= 1;
-        Dice * dice = self.diceArray[userInput];
-        dice.isHeld = YES;
+    int userInput = userDiceSelection.intValue; //converting user input into int value
+    if (userInput < 6 && userInput > 0 ) {
+        userInput -= 1; //-1 so it can match index of array
+        Dice *dice = self.diceArray[userInput];
+        dice.isHeld = YES; //
+        
+        if (![self.heldDicesArray containsObject:dice]) {
+        
+            [self.heldDicesArray addObject:dice];
+            NSLog(@"Number of dices in heldDicesArray: %ld", [self.heldDicesArray count]);
+        }
+        
         NSLog(@"Holding Dice #%@", userDiceSelection);
         [self printGamesStatus];
+        
         return YES;
+        
     } else {
         NSLog(@"Dice Number not found");
         return NO;
     }
     
 }
+
+- (NSInteger) calculateScore {
+
+    NSInteger sum = 0;
+    if ([self.heldDicesArray count] == 5 ) {
+        
+        for (Dice *dice in self.heldDicesArray) {
+        
+            if (dice.currentDiceValue == 3) {
+                dice.currentDiceValue = 0;
+            }
+            
+            sum += dice.currentDiceValue;
+        }
+        
+        NSLog(@"Total score: %ld", sum);
+    }
+    return sum;
+}
+
 @end
